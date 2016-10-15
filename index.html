@@ -21,7 +21,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
-      var socket = io.connect('http://localhost:3000', { query: 'url=' + encodeURIComponent(window.location.href) });
+      var socket = io.connect('<%= server %>', { query: 'url=' + encodeURIComponent(window.location.href) });
       $('form').submit(function(){
         socket.emit('chat message', $('#m').val());
         $('#m').val('');

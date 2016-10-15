@@ -1,11 +1,22 @@
 var app = require('express')();
 var http = require('http').Server(app);
+var ejs = require('ejs');
+var fs = require('fs');
 var io = require('socket.io')(http);
 
 app.set('port', process.env.PORT || 3000);
+const SERVER = (process.env.SERVER_URL || 'localhost') + ':' + app.get('port');
 
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  fs.readFile('index.html', 'utf-8', function(err, content) {
+    if (err) {
+      res.end('error occurred');
+      return;
+    }
+    var html = ejs.render(content, {server: SERVER});
+    res.end(html);
+  });
 });
 
 io.on('connection', function(socket){
