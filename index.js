@@ -5,7 +5,7 @@ var fs = require('fs');
 var io = require('socket.io')(http);
 
 app.set('port', process.env.PORT || 3000);
-const SERVER = (process.env.SERVER_URL || 'localhost') + ':' + app.get('port');
+const SERVER = process.env.SERVER_URL || 'localhost:' + app.get('port');
 
 app.get('/', function(req, res){
   res.writeHead(200, {'Content-Type': 'text/html'});
