@@ -20,17 +20,19 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
+  var room = socket.handshake.query.url;
+  socket.join(room);
 
-  socket.join(socket.handshake.query.url);
-
-  console.log('a user connected to ' + socket.handshake.query.url);
+  console.log('a user connected to ' + room);
   socket.on('disconnect', function(){
-    console.log('user disconnected from ' + socket.handshake.query.url);
+    console.log('user disconnected from ' + room);
   });
-  socket.on('chat message', function(msg){
-    console.log('room: ' + socket.handshake.query.url);
-    console.log('message: ' + msg);
-    io.to(socket.handshake.query.url).emit('chat message', msg);
+
+  socket.on('chat message', function(obj){
+    console.log('room: ' + room);
+    console.log('name: ' + obj.name);
+    console.log('message: ' + obj.msg);
+    socket.broadcast.to(room).emit('chat message', obj);
   });
 });
 
