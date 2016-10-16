@@ -27,6 +27,8 @@ io.on('connection', function(socket){
     .limit(HISTORY_LIMIT)
     .exec(function(err, historyMessages) {
       if (err) throw err;
+      console.log('Sending the history...');
+      console.log(historyMessages);
       socket.to(socket.id).emit(CHAT_HISTORY_ENENT, historyMessages);
     });
 
