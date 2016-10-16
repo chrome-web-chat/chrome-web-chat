@@ -34,6 +34,19 @@ io.on('connection', function(socket){
   });
 
   socket.on('chat message', function(obj){
+    var message = new Message({
+      uid: '123',
+      url: room,
+      domain: room,
+      username: obj.name,
+      content: obj.msg
+    });
+
+    message.save(function(err) {
+      if (err) throw err;
+      console.log('Message saved successfully!');
+    });
+
     console.log('room: ' + room);
     console.log('name: ' + obj.name);
     console.log('message: ' + obj.msg);
