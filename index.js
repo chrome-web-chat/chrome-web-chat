@@ -15,9 +15,9 @@ app.set('port', process.env.PORT || 3000);
 
 io.on('connection', function(socket){
   var room = socket.handshake.query.url;
-  var id = socket.handshake.query.id;
-  if (!room || !id) {
-    console.log('no room or id provided');
+  var uid = socket.handshake.query.uid;
+  if (!room || !uid) {
+    console.log('no room or uid provuided');
     return;
   }
 
@@ -29,20 +29,20 @@ io.on('connection', function(socket){
       if (err) throw err;
       console.log('Sending the history...');
       console.log(historyMessages);
-      io.to(socket.id).emit(CHAT_HISTORY_ENENT, historyMessages);
+      io.to(socket.uid).emit(CHAT_HISTORY_ENENT, historyMessages);
     });
 
   socket.join(room);
 
   console.log('a user connected to ' + room);
-  console.log('id: ' + id);
+  console.log('uid: ' + uid);
   socket.on('disconnect', function(){
     console.log('user disconnected from ' + room);
   });
 
   socket.on('chat message', function(obj){
     var message = new Message({
-      uid: id,
+      uid: uid,
       url: room,
       domain: room,
       username: obj.username,
