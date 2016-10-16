@@ -7,6 +7,10 @@ var mongodbUri = process.env.MONGODB_URI;
 mongoose.connect(mongodbUri);
 var Message = require('./models/message');
 
+const CHAT_MESSAGE_ENENT = 'chat message';
+const CHAT_HISTORY_ENENT = 'chat history';
+const HISTORY_LIMIT = 10;
+
 app.set('port', process.env.PORT || 3000);
 
 io.on('connection', function(socket){
@@ -16,6 +20,15 @@ io.on('connection', function(socket){
     console.log('no room or id provided');
     return;
   }
+
+  Message
+    .find({url: room})
+    .sort({'timestamp': -1})
+    .limit(HISTORY_LIMIT)
+    .exec(function(err, historyMessages) {
+      socket.to(socket.id).emit(CHAT_HISTORY_ENENT, historyMessages);
+    });
+
   socket.join(room);
 
   console.log('a user connected to ' + room);
@@ -29,8 +42,8 @@ io.on('connection', function(socket){
       uid: id,
       url: room,
       domain: room,
-      username: obj.name,
-      content: obj.msg
+      username: obj.username,
+      content: obj.content
     });
 
     message.save(function(err) {
@@ -39,9 +52,9 @@ io.on('connection', function(socket){
     });
 
     console.log('room: ' + room);
-    console.log('name: ' + obj.name);
-    console.log('message: ' + obj.msg);
-    socket.broadcast.to(room).emit('chat message', obj);
+    console.log('name: ' + obj.username);
+    console.log('message: ' + obj.content);
+    socket.broadcast.to(room).emit(CHAT_MESSAGE_ENENT, obj);
   });
 });
 
