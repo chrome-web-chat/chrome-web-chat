@@ -29,7 +29,7 @@ io.on('connection', function(socket){
       if (err) throw err;
       console.log('Sending the history...');
       console.log(historyMessages);
-      socket.to(socket.id).emit(CHAT_HISTORY_ENENT, historyMessages);
+      io.to(socket.id).emit(CHAT_HISTORY_ENENT, historyMessages);
     });
 
   socket.join(room);
