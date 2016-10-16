@@ -4,6 +4,9 @@ var ejs = require('ejs');
 var fs = require('fs');
 var io = require('socket.io')(http);
 
+var mongoose = require('mongoose');
+var mongodbUri = process.env.MONGODB_URI;
+mongoose.connect(mongodbUri);
 var Message = require('./models/message');
 
 app.set('port', process.env.PORT || 3000);
