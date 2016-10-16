@@ -26,6 +26,7 @@ io.on('connection', function(socket){
     .sort({'timestamp': -1})
     .limit(HISTORY_LIMIT)
     .exec(function(err, historyMessages) {
+      if (err) throw err;
       socket.to(socket.id).emit(CHAT_HISTORY_ENENT, historyMessages);
     });
 
