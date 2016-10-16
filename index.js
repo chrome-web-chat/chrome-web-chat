@@ -4,6 +4,8 @@ var ejs = require('ejs');
 var fs = require('fs');
 var io = require('socket.io')(http);
 
+var Message = require('./models/message');
+
 app.set('port', process.env.PORT || 3000);
 const SERVER = process.env.SERVER_URL || 'localhost:' + app.get('port');
 
