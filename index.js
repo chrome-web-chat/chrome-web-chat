@@ -45,8 +45,8 @@ io.on('connection', function(socket){
       uid: uid,
       url: room,
       domain: room,
-      username: obj.username,
-      content: obj.content
+      username: obj.username || 'Anonymous',
+      content: obj.content || ' '
     });
 
     message.save(function(err) {
