@@ -57,6 +57,7 @@ io.on('connection', function(socket){
     console.log('room: ' + room);
     console.log('name: ' + obj.username);
     console.log('message: ' + obj.content);
+    obj.uid = uid;
     socket.broadcast.to(room).emit(CHAT_MESSAGE_ENENT, obj);
   });
 });
