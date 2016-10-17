@@ -14,7 +14,8 @@ const HISTORY_LIMIT = 10;
 app.set('port', process.env.PORT || 3000);
 
 io.on('connection', function(socket){
-  var room = socket.handshake.query.url;
+  // remove query string, hash, and trailing slashes from url
+  var room = socket.handshake.query.url.split(/[?#]/)[0].replace(/\/+$/, "");
   var uid = socket.handshake.query.uid;
   if (!room || !uid) {
     console.log('no room or uid provuided');
