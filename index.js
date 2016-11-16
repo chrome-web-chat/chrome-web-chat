@@ -44,9 +44,9 @@ io.on('connection', function(socket){
   }
   if (!userList[room][email]) {
     userList[room][email] = 0;
-    socket.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
   }
   userList[room][email] += 1;
+  socket.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
 
   console.log(userList);
   console.log('a user connected to ' + room);
