@@ -46,7 +46,8 @@ io.on('connection', function(socket){
     userList[room][email] = 0;
   }
   userList[room][email] += 1;
-  socket.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
+  console.log(Object.keys(userList[room]));
+  io.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
 
   console.log(userList);
   console.log('a user connected to ' + room);
@@ -56,7 +57,7 @@ io.on('connection', function(socket){
     userList[room][email] -= 1;
     if (userList[room][email] == 0) {
       delete userList[room][email];
-      socket.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
+      io.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
     }
     if (Object.keys(userList[room]).length === 0) {
       delete userList[room];
