@@ -7,8 +7,9 @@ var mongodbUri = process.env.MONGODB_URI;
 mongoose.connect(mongodbUri);
 var Message = require('./models/message');
 
-const CHAT_MESSAGE_ENENT = 'chat message';
-const CHAT_HISTORY_ENENT = 'chat history';
+const CHAT_MESSAGE_EVENT = 'chat message';
+const CHAT_HISTORY_EVENT = 'chat history';
+const USER_LIST_EVENT = 'user list';
 const HISTORY_LIMIT = 10;
 
 app.set('port', process.env.PORT || 3000);
@@ -33,7 +34,7 @@ io.on('connection', function(socket){
       if (err) throw err;
       console.log('Sending the history...');
       console.log(historyMessages);
-      io.to(socket.id).emit(CHAT_HISTORY_ENENT, historyMessages);
+      io.to(socket.id).emit(CHAT_HISTORY_EVENT, historyMessages);
     });
 
   socket.join(room);
@@ -43,11 +44,11 @@ io.on('connection', function(socket){
   }
   if (!userList[room][email]) {
     userList[room][email] = 0;
+    socket.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
   }
   userList[room][email] += 1;
 
   console.log(userList);
-
   console.log('a user connected to ' + room);
   console.log('uid: ' + uid);
   socket.on('disconnect', function(){
@@ -55,6 +56,7 @@ io.on('connection', function(socket){
     userList[room][email] -= 1;
     if (userList[room][email] == 0) {
       delete userList[room][email];
+      socket.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
     }
     if (Object.keys(userList[room]).length === 0) {
       delete userList[room];
@@ -80,7 +82,7 @@ io.on('connection', function(socket){
     console.log('name: ' + obj.username);
     console.log('message: ' + obj.content);
     obj.uid = uid;
-    socket.broadcast.to(room).emit(CHAT_MESSAGE_ENENT, obj);
+    socket.broadcast.to(room).emit(CHAT_MESSAGE_EVENT, obj);
   });
 });
 
