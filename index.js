@@ -13,12 +13,15 @@ const HISTORY_LIMIT = 10;
 
 app.set('port', process.env.PORT || 3000);
 
+var userList = {};
+
 io.on('connection', function(socket){
   // remove query string, hash, and trailing slashes from url
   var room = socket.handshake.query.url.split(/[?#]/)[0].replace(/\/+$/, "");
   var uid = socket.handshake.query.uid;
-  if (!room || !uid) {
-    console.log('no room or uid provuided');
+  var email = socket.handshake.query.email;
+  if (!room || !uid || !email) {
+    console.log('no room or uid or email provided');
     return;
   }
 
@@ -35,15 +38,31 @@ io.on('connection', function(socket){
 
   socket.join(room);
 
+  if (!userList[room]) {
+    userList[room] = {};
+  }
+  if (!userList[room][email]) {
+    userList[room][email] = 0;
+  }
+  userList[room][email] += 1;
+
+  console.log(userList);
+
   console.log('a user connected to ' + room);
   console.log('uid: ' + uid);
   socket.on('disconnect', function(){
     console.log('user disconnected from ' + room);
+    userList[room][email] -= 1;
+    if (userList[room][email] == 0) {
+      delete userList[room][email];
+    }
+    if (Object.keys(userList[room]).length === 0) {
+      delete userList[room];
+    }
+    console.log(userList);
   });
 
   socket.on('chat message', function(obj){
-    console.log(io.sockets.adapter.rooms[room]);
-    console.log(io.sockets.adapter.rooms[room].length);
     var message = new Message({
       uid: uid,
       url: room,
