@@ -46,7 +46,6 @@ io.on('connection', function(socket){
     userList[room][email] = 0;
   }
   userList[room][email] += 1;
-  console.log(Object.keys(userList[room]));
   io.to(room).emit(USER_LIST_EVENT, Object.keys(userList[room]));
 
   console.log(userList);
