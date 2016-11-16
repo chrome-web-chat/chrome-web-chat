@@ -42,6 +42,8 @@ io.on('connection', function(socket){
   });
 
   socket.on('chat message', function(obj){
+    console.log(io.sockets.adapter.rooms[room]);
+    console.log(io.sockets.adapter.rooms[room].length);
     var message = new Message({
       uid: uid,
       url: room,
