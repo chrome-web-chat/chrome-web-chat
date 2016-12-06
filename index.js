@@ -78,7 +78,6 @@ io.on('connection', function(socket){
       console.log('Message saved successfully!');
     });
 
-    console.log('room: ' + room);
     console.log('name: ' + obj.username);
     console.log('message: ' + obj.content);
     obj.uid = uid;
